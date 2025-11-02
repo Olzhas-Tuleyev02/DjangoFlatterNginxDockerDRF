@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог Услуг{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-4xl font-bold">Каталог Услуг</h1>
+        <div class="flex items-center space-x-4">
+            <label for="sort" class="text-gray-600">Сортировать по:</label>
+            <select id="sort" name="sort" class="border rounded-md px-4 py-2">
+                <option value="name">Названию</option>
+                <option value="price_asc">Цене (по возрастанию)</option>
+                <option value="price_desc">Цене (по убыванию)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {% for service in services %}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+            <a href="{% url 'services:service_detail' service.slug %}">
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" alt="{{ service.name }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500">No Image</span>
+                    </div>
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">{{ service.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ service.category.name }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-blue-600">{{ service.price }} KZT</span>
+                        <a href="{% url 'services:service_detail' service.slug %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <p>Услуги скоро появятся.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
