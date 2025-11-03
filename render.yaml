@@ -12,16 +12,10 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis
-          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
-
   - type: worker
     name: celery-worker
     env: python
@@ -33,17 +27,11 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis
-          property: connectionString
       - key: SECRET_KEY
         fromService:
           type: web
           name: backend
           envVarKey: SECRET_KEY
-
   - type: worker
     name: celery-beat
     env: python
@@ -55,23 +43,16 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis
-          property: connectionString
       - key: SECRET_KEY
         fromService:
           type: web
           name: backend
           envVarKey: SECRET_KEY
-
 databases:
   - name: db
     databaseName: web_shop_db
     user: web_shop_user
     plan: free
-
 redis:
   - name: redis
     plan: free
