@@ -2,6 +2,7 @@ services:
   - type: web
     name: backend
     env: python
+    plan: free
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
@@ -24,6 +25,7 @@ services:
   - type: worker
     name: celery-worker
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A core worker -l info
     envVars:
@@ -45,6 +47,7 @@ services:
   - type: worker
     name: celery-beat
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     envVars:
@@ -65,8 +68,9 @@ services:
 
 databases:
   - name: db
-    databaseName: your_db_name
-    user: your_db_user
+    databaseName: web_shop_db
+    user: web_shop_user
+    plan: free
 
 redis:
   - name: redis
