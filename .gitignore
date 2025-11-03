@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 venv/
 .env
+allenv.env
 
 # Django
 *.log
