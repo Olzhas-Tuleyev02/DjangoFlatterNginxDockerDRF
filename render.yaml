@@ -1,6 +1,12 @@
 services:
-  - type: web
-    name: backend
+  # Определяем Redis как приватный сервис, запускающий Docker-образ Redis
+  - name: redis
+    type: pserv
+    dockerImage: redis:7
+    plan: free
+
+  - name: backend
+    type: web
     env: python
     plan: free
     buildCommand: |
@@ -12,12 +18,16 @@ services:
         fromDatabase:
           name: db
           property: connectionString
+      # Теперь мы явно указываем URL нашего Redis-сервиса
+      - key: REDIS_URL
+        value: redis://redis:6379
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
-  - type: worker
-    name: celery-worker
+
+  - name: celery-worker
+    type: worker
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -27,13 +37,16 @@ services:
         fromDatabase:
           name: db
           property: connectionString
+      - key: REDIS_URL
+        value: redis://redis:6379
       - key: SECRET_KEY
         fromService:
           type: web
           name: backend
           envVarKey: SECRET_KEY
-  - type: worker
-    name: celery-beat
+
+  - name: celery-beat
+    type: worker
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -43,16 +56,16 @@ services:
         fromDatabase:
           name: db
           property: connectionString
+      - key: REDIS_URL
+        value: redis://redis:6379
       - key: SECRET_KEY
         fromService:
           type: web
           name: backend
           envVarKey: SECRET_KEY
+
 databases:
   - name: db
     databaseName: web_shop_db
     user: web_shop_user
-    plan: free
-redis:
-  - name: redis
     plan: free
