@@ -1,8 +1,12 @@
 services:
-  # Определяем Redis как приватный сервис, запускающий Docker-образ Redis
+  # Определяем Redis как приватный сервис
   - name: redis
     type: pserv
-    dockerImage: redis:7
+    # Указываем, что среда - Docker
+    env: docker
+    # Правильный способ указать внешний Docker-образ
+    image:
+      url: redis:7
     plan: free
 
   - name: backend
@@ -18,7 +22,6 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      # Теперь мы явно указываем URL нашего Redis-сервиса
       - key: REDIS_URL
         value: redis://redis:6379
       - key: SECRET_KEY
