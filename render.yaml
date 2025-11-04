@@ -1,14 +1,4 @@
 services:
-  # Определяем Redis как приватный сервис
-  - name: redis
-    type: pserv
-    # Указываем, что среда - Docker
-    env: docker
-    # Правильный способ указать внешний Docker-образ
-    image:
-      url: redis:7
-    plan: free
-
   - name: backend
     type: web
     env: python
@@ -22,8 +12,6 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
@@ -40,8 +28,6 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379
       - key: SECRET_KEY
         fromService:
           type: web
@@ -59,8 +45,6 @@ services:
         fromDatabase:
           name: db
           property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379
       - key: SECRET_KEY
         fromService:
           type: web
