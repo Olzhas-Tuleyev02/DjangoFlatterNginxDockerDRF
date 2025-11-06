@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'products.apps.ProductsConfig',
     'orders.apps.OrdersConfig',
+    'services.apps.ServicesConfig',
     'core',
 
     # 3rd-party apps

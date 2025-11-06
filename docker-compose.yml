@@ -1,16 +1,19 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:16-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${SQL_DATABASE}
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
     ports:
       - "5433:5432" # Только для локальной отладки, в продакшене не нужно
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SQL_USER} -d ${SQL_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -28,8 +31,10 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     command: /app/entrypoint.sh # Запускаем скрипт entrypoint
 
   nginx:
@@ -51,9 +56,12 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - redis
-      - db
-      - backend
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      backend:
+        condition: service_started
 
   celery_beat:
     build: .
@@ -63,9 +71,12 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - redis
-      - db
-      - backend
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      backend:
+        condition: service_started
 
   
 
