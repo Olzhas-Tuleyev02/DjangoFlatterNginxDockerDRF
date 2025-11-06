@@ -120,6 +120,7 @@ import os
 # Cache
 # ------------------------------------------------------------------------------
 if 'REDIS_URL' in os.environ:
+    # Production Cache
     CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
@@ -129,7 +130,11 @@ if 'REDIS_URL' in os.environ:
             }
         }
     }
+    # Celery
+    CELERY_BROKER_URL = env('REDIS_URL')
+    CELERY_RESULT_BACKEND = env('REDIS_URL')
 else:
+    # Development Cache
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
