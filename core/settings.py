@@ -115,8 +115,28 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
   
-# Caching  
-CACHES = { 'default': { 'BACKEND': 'django_redis.cache.RedisCache', 'LOCATION': env('REDIS_URL'), 'OPTIONS': { 'CLIENT_CLASS': 'django_redis.client.DefaultClient', } } }  
+import os
+
+# Cache
+# ------------------------------------------------------------------------------
+if 'REDIS_URL' in os.environ:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': env('REDIS_URL'),
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
+
   
 # Celery  
 CELERY_BROKER_URL = env('REDIS_URL')  
