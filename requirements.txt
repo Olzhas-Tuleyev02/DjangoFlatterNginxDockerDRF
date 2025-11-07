@@ -70,3 +70,4 @@ wcwidth==0.2.13
 Faker==25.3.0
 dj-database-url==2.1.0
 whitenoise==6.6.0
+django-celery-beat==2.5.0
