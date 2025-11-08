@@ -51,8 +51,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'social_django',
     'rest_framework_simplejwt',
-    'django_celery_results',
-    'django_celery_beat',
+    'django_celery_results', # Keep this for now, as it's a result backend, not a beat scheduler
 
     # Local apps
     'users.apps.UsersConfig',
