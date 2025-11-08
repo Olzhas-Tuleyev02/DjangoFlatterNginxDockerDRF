@@ -215,12 +215,20 @@ CELERY_RESULT_EXTENDED = True
 
 # Social Auth
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_CLIENT_SECRET')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-]
+
+# Make Google OAuth2 settings conditional for build process
+if 'GOOGLE_CLIENT_ID' in os.environ and 'GOOGLE_CLIENT_SECRET' in os.environ:
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_CLIENT_ID')
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+    ]
+else:
+    # Provide dummy values or skip if not present, to allow build to pass
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = None
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = None
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [] # Or remove if not needed
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
