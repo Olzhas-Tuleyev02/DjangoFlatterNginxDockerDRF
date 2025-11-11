@@ -23,10 +23,8 @@ from rest_framework_simplejwt.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import create_temp_superuser_view
 
 urlpatterns = [
-    path('create-superuser-temp-url-987654321/', create_temp_superuser_view, name='create_temp_superuser'),
     path('admin/', admin.site.urls),
     # Web interface
     path('', include('web.urls')),
